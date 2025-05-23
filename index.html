@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Studybite Onlineshop</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fffdf9;
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    header img {
+      width: 200px;
+      height: auto;
+    }
+    h1 {
+      font-size: 2em;
+    }
+    .produkt-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto 40px;
+    }
+    .produkt {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .produkt img {
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    .produkt h3 {
+      margin: 10px 0 5px;
+    }
+    .produkt p {
+      margin: 5px 0;
+    }
+    button {
+      padding: 8px 12px;
+      margin-top: 10px;
+      background-color: #593c1f;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #402c16;
+    }
+    .warenkorb {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f0f0f0;
+      border-radius: 10px;
+    }
+    .warenkorb h2 {
+      text-align: center;
+    }
+    .warenkorb-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .gesamt {
+      text-align: right;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="https://i.imgur.com/CpGBaUG.png" alt="Studybite Logo" />
+    <h1>Jede Teilchen ergänzt sich.</h1>
+  </header>
+
+  <section class="produkt-container">
+    <!-- Studybite groß -->
+    <div class="produkt">
+      <img src="https://i.imgur.com/LR8sat1.png" alt="Studybite groß" />
+      <h3>Studybite – 250g</h3>
+      <p>Vollmilchschokolade</p>
+      <p><strong>4.50 CHF</strong></p>
+      <button onclick="addToCart('Studybite gross', 4.5)">In den Warenkorb</button>
+    </div>
+
+    <!-- Studybite klein -->
+    <div class="produkt">
+      <img src="https://i.imgur.com/rin0TzF.png" alt="Studybite klein" />
+      <h3>Studybite – 150g</h3>
+      <p>Vollmilchschokolade</p>
+      <p><strong>2.00 CHF</strong></p>
+      <button onclick="addToCart('Studybite 150g', 2)">In den Warenkorb</button>
+    </div>
+
+
+  <!-- Warenkorb -->
+  <div class="warenkorb">
+    <h2>🛒 Warenkorb</h2>
+    <div id="cartItems"></div>
+    <div class="gesamt" id="total">Total: 0 CHF</div>
+    <div style="text-align: right; margin-top: 15px;">
+  <a href="https://buy.stripe.com/28EeVc22ndEYcSjd32b3q00" target="_blank">
+    <button>Spenden</button>
+  </a>
+    <div style="text-align: right; margin-top: 15px;">
+  <button onclick="goToThankYou()">Jetzt kaufen</button>
+</div>
+
+
+  <!-- Warenkorb Script -->
+  <script>
+    const cart = [];
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItems = document.getElementById("cartItems");
+      cartItems.innerHTML = "";
+      let total = 0;
+      cart.forEach(item => {
+        total += item.price * item.qty;
+        cartItems.innerHTML += `
+          <div class="warenkorb-item">
+            <span>${item.qty}× ${item.name}</span>
+            <span>${(item.price * item.qty).toFixed(2)} CHF 
+              <button onclick="removeItem('${item.name}')">✕</button>
+            </span>
+          </div>`;
+      });
+      document.getElementById("total").innerText = "Total: " + total.toFixed(2) + " CHF";
+    }
+
+    function removeItem(name) {
+      const index = cart.findIndex(item => item.name === name);
+      if (index !== -1) {
+        cart.splice(index, 1);
+        updateCart();
+      }
+    }
+
+    function checkout() {
+      alert("Zahlungssystem kommt hier hin – z. B. Stripe, PayPal oder Twint.");
+    }
+  </script>
+
+<script>
+  function goToThankYou() {
+    // Leert den Warenkorb (optional)
+    cart.length = 0;
+    updateCart();
+    // Leitet zur Dankesseite weiter
+    window.location.href = "thankyou.html";
+  }
+</script>
+    
+</body>
+</html>
